@@ -1,0 +1,19 @@
+# d'Arc 0.0.1
+
+*.o
+*.m
+*.M
+*.s
+*.S
+*.a
+*.so
+*.out
+*.log
+*.bak
+
+lua
+luac
+
+.DS_Store
+._.*
+._*

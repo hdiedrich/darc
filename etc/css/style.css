@@ -1,0 +1,88 @@
+		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
+	                text-align: justify;	
+					margin: 0; 
+					background-color: #fffce0; }
+
+		a 		  { color: #989156; 
+					text-decoration: none; }
+		
+		a:visited { color: orange; }
+		
+		a:hover   { color: gold; }
+		
+		
+		img.head  { margin: 0px 10px 10px 0px; }
+
+		div.body  { padding: 4em 5em 1em 5em;
+	                text-align: justify;	
+				  }
+		
+		div.panel { background-color: white; 
+					border-radius: 2em;
+					-moz-border-radius: 2em;
+					border: 2px solid navy;
+					margin: 2em;
+					padding: 2em;
+				  }
+		
+		pre.code-index,
+		pre.code,
+		pre
+				 { background-color: #f4eca8; /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-top-right-radius: 1em; 
+					-moz-border-radius-topright: 1em; 
+					overflow: hidden; scrollbar: auto;
+				  }
+		
+		pre.codelast-index,
+		pre.codelast
+				 { background-color: #f4eca8;  /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-bottom-right-radius: 1.2em; 
+					-moz-border-radius-bottomright: 1.2em; 
+				  }
+
+		pre.code,
+		pre       { background-color: white;
+					border: 2px solid #f0d8c0; }
+		
+		pre.codelast  
+				  { background-color: #f0e4c4; 
+					border: 2px solid white; }
+		
+		div.head { border: 0;
+				   border-top-left-radius: 20px 7px; 
+				   -moz-border-radius-topleft: 20px 7px; 
+				   border-bottom-right-radius: 	35px 30px; 
+				   -moz-border-radius-bottomright: 50px 15px; 
+				   background: url(../../etc/images/darc-head-background.png) no-repeat top right;
+				   padding: 0; margin: 0; 
+				 }  
+		
+		div.foot { border: 0; 
+				   border-top-left-radius: 15px; 
+				   -moz-border-radius-topleft: 15px; 
+				   border-bottom-right-radius: 15px; 
+				   -moz-border-radius-bottomright: 15px; 
+				   background: url(../../etc/images/darc-head-background.png) no-repeat bottom left;
+				   height:31px; padding: 0; margin: 0; 
+				 }  
+				 
+        div.rightinset 
+                { border: 2px solid white;
+                  margin-left: 1em;
+                  padding: 2em;
+                  background-color: #c25036;
+                  float: right;
+                  width: 40%;
+                  border-radius: 1em;
+                  -moz-border-radius: 1em;
+                  font-size: 0.8em;
+                  text-align: justify; }

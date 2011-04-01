@@ -1,0 +1,9 @@
+# Jeanne d'Arc
+
+"d'Arc" (in this case, pronounced "**dork**") is the name of the beloved national French heroine who rallied her countrymen's spirits to recover their homeland in the 100 Years War against the English. She led the French army to several glorious victories, was captured by the Burgundians, sold to the English, found guilty of witchcraft by the Church and burned at the stake when she was 19 years old. Bad enough. Twenty-five years after, the Pope pronounced her innocent, declared her a martyr and in 1920 she was pronounced a Saint. 
+
+There is a lesson in that.
+
+So "d'Arc" is neither an acronym nor an abbreviation, but a name. Like most names, it should be written the way tradition decrees, in this case, "d'Arc". It's complicated, but worth it. Please do not write it as "DARC", which is both ugly and confusing, because then it becomes an acronym with different meanings for different people. So, please, write "d'Arc" right! Especially when creating folder names. And file names. God is watching. You must do things the right way.
+
+The d'Arc project was inspired by the exuberant welcome to the contribution of Fleece at the ever open-minded Lua mailing list by the high arbiters of proper software engineering, defected and asylumed there from their Java past at project Dark Star as it is rumored. So the "J" of Jeanne is an intended pun. Oh wait, or was it the sound wise association of "d'Arc" with black magic? Sad to say, it could just as well be the burning at the stake, by the righteous worhsippers of the true faith. This never gets old. Whatever. I am sure Jeanne (19), is watching from the High Heavens and loves it.

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Jeanne d'Arc</title>
+	<link rel="stylesheet" type="text/css" href="etc/css/style.css" />
+</head>
+
+<body>
+<div class=head><img class=head src=etc/images/darc-head.png></div>
+<div class=body>
+
+<h1>d'Arc 0.1</h1>
+
+<p><strong>Fast Lua Sub API</strong></p>
+
+</div>
+
+<div class=panel style='border-radius: 2em; -moz-border-radius: 2em; border: 1px solid black; margin: 1em 4em 2em 4em; padding: 2em 3em 2em 2em;'>
+
+
+<table>
+<tr>
+<td style = 'padding: 1em 2em 1em 1em;' valign=top>
+
+<a class=pages href=README.html>More</a> <br />
+<a class=pages href=etc/NAME.html>Jeanne</a> <br />
+<a class=pages href=src/darc.h>Source</a> <br />
+<br />
+<a class=pages href=http://hdiedrich.github.com/darc/>Online Home</a> <br />
+<a class=pages href=LICENSE.html>License</a> <br />
+<a class=pages href=https://github.com/hdiedrich/darc>Repository</a> <br />
+<br />
+<br />
+</td>
+<td>
+
+<p>This is a sub API that reaches below the official Lua API to get to the quick faster. It is only for reading, and except for rare cases, not for setting variables and tables. It doubles only this small area, for all else you keep using the official API. It works for Lua 5.1 and JIT 2. I promise there will be 5.2 support.</p>
+
+<p>d'Arc is a lot faster and uses less memory than the Lua API but will have to be adapted to new releases of Lua an LuaJIT, so if you rely on it you may get awfully stuck in the future and die. </p>
+
+<p>Unless you feel able to understand 50 lines of C code. To adapt them yourself if the spit hits the pan. Which is really what this project is about: to get you started exploring the ground floor of Lua and LuaJIT. Because Lua is so small and concise, using it the way d'Arc invites you to can quickly become as addictive as Lua itself. The VM is a program, too. Make it your own. Your understanding and using of Lua will only benefit. Also note that not using d'Arc is not in itself a guarantee that you will not die.</p>
+
+<p><strong>Download</strong></p>
+
+<pre class=code-index>git clone git://github.com/hdiedrich/darc.git darc</pre>
+
+
+</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<center>
+<small style='color:gray'>
+&copy; 2011 <a href=http://www.hdiedrich.com style='color:gray'>Henning Diedrich</a>
+</small>
+</center>
+
+<div class=foot style='padding-left: 2em;'></div>
+
+</body></html>

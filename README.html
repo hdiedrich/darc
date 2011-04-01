@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>d'Arc 0.0.1 (sketch)</title>
+	<style type="text/css"><!--
+		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
+	                text-align: justify;	
+					margin: 0; 
+					background-color: #fffce0; }
+
+		a 		  { color: #989156; 
+					text-decoration: none; }
+		
+		a:visited { color: orange; }
+		
+		a:hover   { color: gold; }
+		
+		
+		img.head  { margin: 0px 10px 10px 0px; }
+
+		div.body  { padding: 4em 5em 1em 5em;
+	                text-align: justify;	
+				  }
+		
+		div.panel { background-color: white; 
+					border-radius: 2em;
+					-moz-border-radius: 2em;
+					border: 2px solid navy;
+					margin: 2em;
+					padding: 2em;
+				  }
+		
+		pre.code-index,
+		pre.code,
+		pre
+				 { background-color: #f4eca8; /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-top-right-radius: 1em; 
+					-moz-border-radius-topright: 1em; 
+					overflow: hidden; scrollbar: auto;
+				  }
+		
+		pre.codelast-index,
+		pre.codelast
+				 { background-color: #f4eca8;  /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-bottom-right-radius: 1.2em; 
+					-moz-border-radius-bottomright: 1.2em; 
+				  }
+
+		pre.code,
+		pre       { background-color: white;
+					border: 2px solid #f0d8c0; }
+		
+		pre.codelast  
+				  { background-color: #f0e4c4; 
+					border: 2px solid white; }
+		
+		div.head { border: 0;
+				   border-top-left-radius: 20px 7px; 
+				   -moz-border-radius-topleft: 20px 7px; 
+				   border-bottom-right-radius: 	35px 30px; 
+				   -moz-border-radius-bottomright: 50px 15px; 
+				   background: url(etc/images/darc-head-background.png) no-repeat top right;
+				   padding: 0; margin: 0; 
+				 }  
+		
+		div.foot { border: 0; 
+				   border-top-left-radius: 15px; 
+				   -moz-border-radius-topleft: 15px; 
+				   border-bottom-right-radius: 15px; 
+				   -moz-border-radius-bottomright: 15px; 
+				   background: url(etc/images/darc-head-background.png) no-repeat bottom left;
+				   height:31px; padding: 0; margin: 0; 
+				 }  
+				 
+        div.rightinset 
+                { border: 2px solid white;
+                  margin-left: 1em;
+                  padding: 2em;
+                  background-color: #c25036;
+                  float: right;
+                  width: 40;
+                  border-radius: 1em;
+                  -moz-border-radius: 1em;
+                  font-size: 0.8em;
+                  text-align: justify; }
+--></style>
+</head>
+<body>
+<div class=head>
+	<img class=head src=etc/images/darc-head.png>
+</div>
+<div class=body>
+
+<h1>d'Arc 0.0.1 (sketch)</h1>
+
+<p>d'Arc is a small, fast, straight forward, you better read-only, <strong>sub-API</strong> interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 6. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like Jeanne. </p>
+
+<p>As evidenced by the existence of LuaJIT, speed can play a role in Lua projects. d'Arc lets you read out variables and tables as fast as possible, for both Lua and LuaJIT main branch versions, skipping the part where it's copied and  put on the stack. Traversing a table, and reading out a variable wastes a lot of time when done right, i.e. using the API. Which - life can be so confusing - implies that under some circumstances doing it right maybe is not doing it right after all. It's complicated. Jeanne to the rescue. d'Arc is faster, use it for in-house read-only stuff that you can control. </p>
+
+
+<div class=rightinset style='width:40%'>
+With Jeanne, in the end, it didn't really matter were the voices came from that she heard. She was highly effective for them and kicked some butt, they so hated her for it, just killing her wouldn't do. Same for your projects: in the face of world history, maybe it matters less that inevitably some people will feel you are cheating when using something as dirty as d'Arc to be faster than a nice, clean API call. To wit, playing by the rules will safe them re-doing 50 lines of code in case Lua publishes a next version but will waste gazillions of cpu cycles that translate into millions of wasted Megawatts, wasted life time and dead trees! Right. So do the right thing, revel in their frantic screams and do something nice. And dirty. And even green, too!
+</div>
+
+
+<p>And watch out when you get all enthusiastic and start feeling like writing to the variables. That could have all sorts of funky consequences that you will not have plumbed until you tested gc, longjumping, yielding and parallel processes. Stay with reading unless you know what you are doing, which is also the requirement to use this in the first place, in case that hadn't transpired yet.</p>
+
+<p>Maybe memorize it like this: Jeanne listened to God and that worked great for a while. But it didn't necessarily work the other way around when she got in trouble. See, that's the quintessential read-only. God is listening. But you better take care of the action part down here.</p>
+
+<br />
+<center>
+<small style='color:gray'>
+	&copy; 2011 Henning Diedrich
+</small>
+</center>
+</div>
+<div class=foot></div>
+
+</body></html>
