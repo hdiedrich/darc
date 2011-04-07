@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Benchmarks</title>
+	<style type="text/css"><!--
+		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
+	                text-align: justify;	
+					margin: 0; 
+					background-color: #fffce0; }
+
+		a 		  { color: #c25036; 
+					text-decoration: none; }
+		
+		a:visited { color: brown; }
+		
+		a:hover   { color: orange; }
+		
+		
+		img.head  { margin: 0px 10px 10px 0px; }
+
+		div.body  { padding: 4em 5em 1em 5em;
+	                text-align: justify;	
+				  }
+		
+		div.panel { background-color: white; 
+					border-radius: 2em;
+					-moz-border-radius: 2em;
+					border: 2px solid navy;
+					margin: 2em;
+					padding: 2em;
+				  }
+		
+		pre.code-index,
+		pre.code,
+		pre
+				 { background-color: #f4eca8; /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-top-right-radius: 1em; 
+					-moz-border-radius-topright: 1em; 
+					overflow: hidden; scrollbar: auto;
+				  }
+		
+		pre.codelast-index,
+		pre.codelast
+				 { background-color: #f4eca8;  /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-bottom-right-radius: 1.2em; 
+					-moz-border-radius-bottomright: 1.2em; 
+				  }
+
+		pre.code,
+		pre       { background-color: white;
+					border: 2px solid #f0d8c0; }
+		
+		pre.codelast  
+				  { background-color: #f0e4c4; 
+					border: 2px solid white; }
+		
+		div.head { border: 0;
+				   border-top-left-radius: 20px 7px; 
+				   -moz-border-radius-topleft: 20px 7px; 
+				   border-bottom-right-radius: 	35px 30px; 
+				   -moz-border-radius-bottomright: 50px 15px; 
+				   background: url(../etc/images/darc-head-background.png) no-repeat top right;
+				   padding: 0; margin: 0; 
+				 }  
+		
+		div.foot { border: 0; 
+				   border-top-left-radius: 15px; 
+				   -moz-border-radius-topleft: 15px; 
+				   border-bottom-right-radius: 15px; 
+				   -moz-border-radius-bottomright: 15px; 
+				   background: url(../etc/images/darc-head-background.png) no-repeat bottom left;
+				   height:31px; padding: 0; margin: 0; 
+				 }  
+				 
+        div.rightinset 
+                { border: 2px solid white;
+                  margin-left: 1em;
+                  padding: 2em;
+                  background-color: #c25036;
+                  float: right;
+                  width: 40;
+                  border-radius: 1em;
+                  -moz-border-radius: 1em;
+                  font-size: 0.8em;
+                  text-align: justify; }
+--></style>
+</head>
+<body>
+<div class=head>
+	<img class=head src=../etc/images/darc-head.png>
+</div>
+<div class=body>
+
+<p>d'Arc 0.1.0  </p>
+<h2>Benchmarks</h2>
+
+<p>These are benchmarks with the filter sample, albeit with the actual filtering excluded from the math: inspect() was set to always return 1 right away.</p>
+
+<p>For more or less empty racing through a table, d'Arc is up to 2 times faster for small tables and more than 3 times faster for bigger ones, as compared to the official Lua API.</p>
+<pre><code>---------------------------------------------------------------------------------
+12 elements in t={{'help!',{22, {'Oh damn.', 1}, 'foo'}, 'luck', 'struck'}, nil} 
+100000x filter.check_official(t)        392ns/element         false 
+100000x filter.check(t)                 250ns/element  63%,   false
+---------------------------------------------------------------------------------
+10 elements in t[randstr(i)]=randstr(i) 
+100000x filter.check_official(t)        430ns/element         false 
+100000x filter.check(t)                 230ns/element  53%,   false
+---------------------------------------------------------------------------------
+1000 elements in t[randstr(i)]=randstr(i) 
+1000x filter.check_official(t)          280ns/element         false 
+1000x filter.check(t)                    80ns/element  28%,   false
+---------------------------------------------------------------------------------
+10000 elements in t[randstr(i)]=randstr(i) 
+100x filter.check_official(t)           440ns/element         false 
+100x filter.check(t)                    130ns/element  29%,   false
+---------------------------------------------------------------------------------
+100000 elements in t[randstr(i)]=randstr(i) 
+10x filter.check_official(t)            520ns/element         false 
+10x filter.check(t)                     160ns/element  30%,   false
+---------------------------------------------------------------------------------
+10000 elements in t[i*100]=randstr(i)      
+100x filter.check_official(t)           420ns/element         false 
+100x filter.check(t)                    120ns/element  28%,   false
+</code></pre>
+
+<p>This is the benchmarked code:</p>
+
+<h3>d'Arc</h3>
+
+<pre><code>int lame_word_filter(TValue *subject, void *cargo)
+{
+    if(XLUA_IS_STRING(subject))
+
+        return inspect(XLUA_STRING(subject));
+
+    else if(XLUA_IS_TABLE(subject))
+
+        return darc_traverse(XLUA_TABLE(subject), lame_word_filter, cargo); 
+
+    return 1;
+}
+</code></pre>
+
+<h3>Lua API</h3>
+
+<p>If somebody can point me to a better implementation, please let me know.</p>
+
+<pre><code>static int word_filter_official(lua_State *L, int t) {
+
+    int notfound = 1;
+    int type = lua_type(L, -1);
+
+    if(type == LUA_TTABLE) {
+
+        /* table is in the stack at index 't' */
+        lua_pushnil(L);  /* first key */
+        while (notfound &amp;&amp; lua_next(L, t) != 0) {
+
+            /* 'key' (at index -2) and 'value' (at index -1) */
+             notfound = word_filter_official(L, t+2);
+
+            /* removes 'value'; keeps 'key' for next iteration */
+            lua_pop(L, 1);
+        }
+     }        
+     else if(type == LUA_TSTRING) {
+
+            const char *s = lua_tostring(L, -1);
+            notfound = inspect(s);
+    }
+    return notfound;    
+}
+</code></pre>
+
+<p>For both, inspect was set to take no time:</p>
+
+<pre><code>int inspect(const char *string)
+{
+    return 1;
+}
+</code></pre>
+
+
+
+<br />
+<center>
+<small style='color:gray'>
+	&copy; 2011 Henning Diedrich
+</small>
+</center>
+</div>
+<div class=foot></div>
+
+</body></html>
