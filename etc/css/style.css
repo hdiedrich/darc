@@ -3,12 +3,12 @@
 					margin: 0; 
 					background-color: #fffce0; }
 
-		a 		  { color: #989156; 
+		a 		  { color: #c25036; 
 					text-decoration: none; }
 		
-		a:visited { color: orange; }
+		a:visited { color: brown; }
 		
-		a:hover   { color: gold; }
+		a:hover   { color: orange; }
 		
 		
 		img.head  { margin: 0px 10px 10px 0px; }
