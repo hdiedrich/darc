@@ -1,12 +1,12 @@
 # d'Arc 0.2.0
 
-**d'Arc is a small, fast, straight forward, you better read-only, sub-API interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 7. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like [Jeanne](etc/NAME.html).**
+**d'Arc is a small, fast, straight forward, you better read-only, sub-API interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 7. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like [Jeanne](http://hdiedrich.github.com/darc/etc/NAME.html).**
 
-d'Arc lets you read out Lua variables and tables as [fast](doc/BENCHMARKS.html) as possible, for both Lua and LuaJIT. Done right, i.e. using the official Lua API, you will always be wasting quite a bit of time when traversing a table, or reading out a variable. Which - life can be so confusing - implies that under some circumstance doing it right may not be right after all. Like, if performance matters. It's complicated. Jeanne to the rescue. 
+d'Arc lets you read out Lua variables and tables as [fast](http://hdiedrich.github.com/darc/doc/BENCHMARKS.html) as possible, for both Lua and LuaJIT. Done right, i.e. using the official Lua API, you will always be wasting quite a bit of time when traversing a table, or reading out a variable. Which - life can be so confusing - implies that under some circumstance doing it right may not be right after all. Like, if performance matters. It's complicated. Jeanne to the rescue. 
 
 Using d'Arc allows you to avoid the repeat look ups, hash calculations and stack writes that bog down table traversion and variable access when using the official API for Lua or LuaJIT. And once you have accessed a variable, you keep a direct C pointer to its value, rather than going via a look up and the stack again. When traversing a table, d'Arc uses the existing, implicit pointers to the next elements rather than doing separate look ups for each and every individual key, as the official API does.
 
-As an example, here is the [implementation](doc/IMPLEMENTATION.html) of d'Arc vs. the official API, at the C level. On the face of it, d'Arc looks like this:
+As an example, here is the [implementation](http://hdiedrich.github.com/darc/doc/IMPLEMENTATION.html) of d'Arc vs. the official API, at the C level. On the face of it, d'Arc looks like this:
 
     const char *s = XLUA_STRING(tval); 
     
@@ -27,7 +27,7 @@ Maybe memorize it like this: Jeanne listened to God and that worked great for a 
 
 ## Usage
 
-See [sample/filter/filter.c](doc/sample.html)
+See [sample/filter/filter.c](http://hdiedrich.github.com/darc/doc/sample.html)
 
 Basically you get a bunch of oyster shucker macros for direct access of the actual contents of the VM value structures, and to test for the content types (string, number, table etc).
 
@@ -98,7 +98,7 @@ A swearword filter, which returns true when a bad word is found in a Lua value:
     > print(filter.check(v))
     true
 
-The source is in [sample/filter/filter.c](doc/sample.html). 
+The source is in [sample/filter/filter.c](http://hdiedrich.github.com/darc/doc/sample.html). 
 
 Most of that file is boilerplate to get it to play with Lua as a library. The core of it is the following function. This is such a **foldfunc** function, as discussed above, which is of the type
 
@@ -155,4 +155,4 @@ Please send feedback, advise and corrections to hd2010@eonblast.com, or send me 
 Thanks,  
 Henning
 
-<center>[Home](index.html)</center>
+<center>[Home](http://hdiedrich.github.com/darc/index.html)</center>
