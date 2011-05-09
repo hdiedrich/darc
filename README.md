@@ -1,6 +1,6 @@
 # d'Arc 0.2.0
 
-**d'Arc is a small, fast, straight forward, you better read-only, sub-API interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 7. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like [Jeanne](http://hdiedrich.github.com/darc/etc/NAME.html).**
+**d'Arc is a small, fast, straight forward, you better read-only, sub-API interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 7. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like [Jeanne](http://hdiedrich.github.com/darc/doc/NAME.html).**
 
 d'Arc lets you read out Lua variables and tables as [fast](http://hdiedrich.github.com/darc/doc/BENCHMARKS.html) as possible, for both Lua and LuaJIT. Done right, i.e. using the official Lua API, you will always be wasting quite a bit of time when traversing a table, or reading out a variable. Which - life can be so confusing - implies that under some circumstance doing it right may not be right after all. Like, if performance matters. It's complicated. Jeanne to the rescue. 
 

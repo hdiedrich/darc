@@ -9,3 +9,6 @@ So "d'Arc" is neither an acronym nor an abbreviation, but a name. Like most name
 The d'Arc project was inspired by the exuberant welcome to the contribution of Fleece at the ever open-minded Lua mailing list, by the high arbiters of proper software engineering, defected and asylumed there from their Java past at project Dark Star it was rumored. Therefore, the "J" of Jeanne is an intended pun on Java. Oh wait, not, it was the sound-wise association of "d'Arc" with black magic! Or, so very sad to even hint at, maybe the connection was the burning at the stake, by the righteous worhsippers of the true faith? Those, who will turn around and endorse as saintly what they attacked as evil incarnate when it was still young, vulnerable and full of ideals? How this never gets old. Mankind is *so* doomed. Whatever.  
 
 I am sure Jeanne (19), is watching from the High Heavens and loves d'Arc. From the woods, this is to You!
+
+
+<center><a href=/index.html>Home</a></center>

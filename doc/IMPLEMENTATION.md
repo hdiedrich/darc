@@ -303,4 +303,4 @@ If you read ALL of this, I'd like to hear from you. Please send photo and feedba
 Thanks,  
 Henning
 
-<center><a href=index.html>Home</a></center>
+<center><a href=/index.html>Home</a></center>
