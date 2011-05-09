@@ -1,0 +1,22 @@
+# Eonblast Fleece 0.3.0
+
+*.o
+*.m
+*.M
+*.s
+*.S
+*.a
+*.so
+*.out
+*.log
+*.bak
+
+lua
+luac
+lua-yajl
+luajson
+fleece
+
+.DS_Store
+._.*
+._*
