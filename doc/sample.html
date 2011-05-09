@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>d'Arc 0.2.0</title>
+	<style type="text/css"><!--
+		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
+	                text-align: justify;	
+					margin: 0; 
+					background-color: #fffce0; }
+
+		a 		  { color: #c25036; 
+					text-decoration: none; }
+		
+		a:visited { color: brown; }
+		
+		a:hover   { color: orange; }
+		
+		
+		img.head  { margin: 0px 10px 10px 0px; }
+
+		div.body  { padding: 4em 5em 1em 5em;
+	                text-align: justify;	
+				  }
+		
+		div.panel { background-color: white; 
+					border-radius: 2em;
+					-moz-border-radius: 2em;
+					border: 2px solid navy;
+					margin: 2em;
+					padding: 2em;
+				  }
+		
+		pre.code-index,
+		pre.code,
+		pre
+				 { background-color: #f4eca8; /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-top-right-radius: 1em; 
+					-moz-border-radius-topright: 1em; 
+					overflow: hidden; scrollbar: auto;
+				  }
+		
+		pre.codelast-index,
+		pre.codelast
+				 { background-color: #f4eca8;  /* #e2d090; */ /* #fff8d2; */
+					border: 2px solid #fcb000; /* #f4eac8; */
+					padding: 1em;
+					border-bottom-left-radius: 1em; 
+					-moz-border-radius-bottomleft: 1em; 
+					border-bottom-right-radius: 1.2em; 
+					-moz-border-radius-bottomright: 1.2em; 
+				  }
+
+		pre.code,
+		pre       { background-color: white;
+					border: 2px solid #f0d8c0; }
+		
+		pre.codelast  
+				  { background-color: #f0e4c4; 
+					border: 2px solid white; }
+		
+		div.head { border: 0;
+				   border-top-left-radius: 20px 7px; 
+				   -moz-border-radius-topleft: 20px 7px; 
+				   border-bottom-right-radius: 	35px 30px; 
+				   -moz-border-radius-bottomright: 50px 15px; 
+				   background: url(../etc/images/darc-head-background.png) no-repeat top right;
+				   padding: 0; margin: 0; 
+				 }  
+		
+		div.foot { border: 0; 
+				   border-top-left-radius: 15px; 
+				   -moz-border-radius-topleft: 15px; 
+				   border-bottom-right-radius: 15px; 
+				   -moz-border-radius-bottomright: 15px; 
+				   background: url(../etc/images/darc-head-background.png) no-repeat bottom left;
+				   height:31px; padding: 0; margin: 0; 
+				 }  
+				 
+        div.rightinset 
+                { border: 2px solid white;
+                  margin-left: 1em;
+                  padding: 2.5em;
+                  background-color: #c25036;
+                  color: #f4eca8;
+                  float: right;
+                  width: 40;
+                  border-radius: 1em;
+                  -moz-border-radius: 1em;
+                  font-size: 1em;
+                  text-align: justify; }
+--></style>
+</head>
+<body>
+<div class=head>
+	<img class=head src=../etc/images/darc-head.png>
+</div>
+<div class=body>
+
+
+
+<h1>d'Arc 0.2.0</h1>
+
+
+<p>This is a bare bones sample. The interesting stuff is right at the top.</p>
+
+<p><strong>sample/filter/filter.c</strong></p>
+<pre><code>/*       (                             (                                  
+ *       )\ )      (     )        d'Arc)\ )                      (        
+ *      (()/(  (   )\ ( /(   (   (    (()/(    )     )           )\   (   
+ *       /(_)) )\ ((_))\()) ))\  )(    /(_))( /(    (     `  )  ((_) ))\  
+ *      (_))_|((_) _ (_))/ /((_)(()\  (_))  )(_))   )\  ' /(/(   _  /(( ) 
+ *      | |_   (_)| || |_ (_))   ((_) / __|((_)_  _((_)) ((_)_\ | |(_)) /   
+ *      | __|  | || ||  _|/ -_) | '_| \__ \/ _` || '  \()| '_ \)| |/ -_)  
+ *      |_|    |_||_| \__|\___| |_|   |___/\__,_||_|_|_| | .__/ |_|\___|  
+ *                                                       |_|
+ *
+ *      This is a sample for d'Arc 0.2.0, a Lua sub API for Lua and LuaJIT
+ *
+ *      Swearword filter: returns true when a swear is found in a value.
+ *
+ *      &gt; =filter.check("dork")
+ *      false
+ *
+ *      &gt; =filter.check({"nice", "tender", "bitch")
+ *      true
+ *
+ *      This is not even entirely fictitious: word filters are historically
+ *      annoyingly resource consuming. Still, this only for illustration. 
+ */
+
+#include &lt;string.h&gt;
+#include "darc.h"
+
+int inspect(const char *string);
+
+/*****************************************************************************\
+ *             core function: traverse a table looking at each element        *
+\*****************************************************************************/ 
+
+/* Relevant things: 1) the MACROS and 2) the DARC_TRAVERSE() function.       */
+
+int word_filter(TValue *variable, void *state)
+{
+     /* if a string: screen it for bad words */
+    if(XLUA_IS_STRING(variable))
+
+        /* screen it */
+        return inspect(XLUA_STRING(variable));
+
+    /* if a table: traverse it */
+    else if(XLUA_IS_TABLE(variable))
+
+        /* traverse table, using this function as callback, for each element */
+        return darc_traverse(XLUA_TABLE(variable), word_filter, state); 
+
+    return 1;
+}
+
+/* Check out filter4bench.c for how this is done using the official API.     */
+
+/*****************************************************************************\ 
+*                            detect a foul word                               *                                   
+\*****************************************************************************/ 
+
+/* nothing relevant in this section                                          */
+
+int inspect(const char *string)
+{
+    if(strstr(string, "bitch") == 0)
+        return 1;
+
+    /* yeah, genius. But you get the point. */
+    return 0;
+}
+
+/****************************************************************************)\
+***                               LUA HOOKS                                *(*)
+\*****************************************************************************/
+
+/* nothing relevant in this section                                          */
+
+static int filter_check (lua_State *L);
+
+static const struct luaL_Reg filter [] = {
+
+    {"check", filter_check }, /* main function: check strings for swearwords  */
+    { NULL, NULL }
+};
+
+/*---------------------------------------------------------------------------*\
+*  Main function: Test a Lua value for whether it contains swear words        *
+\*---------------------------------------------------------------------------*/
+
+/* nothing relevant in this section                                          */
+
+static int filter_check(lua_State *L) {
+
+    lua_settop(L, 1);   // arguments, max: 1
+    TValue *subject = index2addr(L, -1);
+    lua_pop(L, 1);
+
+    int ok = word_filter(subject, (void *)0);
+
+    lua_pushboolean(L, !ok);
+
+    return 1;   
+}
+
+/*--------------------------------------------------------------------- ( ----*\
+ *  Registration function for opening the filter module                (,\    *
+\*----------------------------------------------------------------------------*/
+/*
+ * We register a function of a different name for Lua and LuaJIT respectively.
+ *
+ * Because as a convention, we always compile two libs, in this case:
+ * 'filter' for Lua, 'filterjit' for LuaJIT. That's one for each target,
+ * Lua and LuaJIT. And we want to have the name of the resulting lib
+ * be identical to the function registered here, which opens the module. 
+ *
+ * Using the official API, one and the same lib works for both Lua and LuaJIT.
+ * Not so for d'Arc, by definition, because it bypasses the official API.
+ */
+
+#ifdef LUA_5_1
+
+LUALIB_API int luaopen_filter (lua_State *L) {
+
+    luaL_register(L, "filter", filter); /* registering this module (PUC Lua) */
+    return 1;
+}
+
+#endif
+
+#ifdef JIT_2
+
+LUALIB_API int luaopen_filterjit /* &lt;&lt;-- 'jit' */ (lua_State *L) {
+
+    luaL_register(L, "filter", filter); /* registering this module (LuaJIT) */
+    return 1;
+}
+
+#endif
+</code></pre>
+
+
+<p>Run it by doing: lua[jit] samples/filter/filter.lua.</p>
+
+<br />
+<center>
+<small style='color:gray'>
+	&copy; 2011 Henning Diedrich
+</small>
+</center>
+</div>
+<div class=foot></div>
+
+</body></html>

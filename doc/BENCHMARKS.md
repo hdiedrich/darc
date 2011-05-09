@@ -1,35 +1,83 @@
-d'Arc 0.1.0  
+**d'Arc 0.2.0**  
 ## Benchmarks
     
-These are benchmarks with the filter sample, albeit with the actual filtering excluded from the math: inspect() was set to always return 1 right away.
+These are benchmarks of a variant of the [filter sample](sample.html). For less skew, the actual filtering was skipped: inspect() was set to always return 1 right away. And for comparison, a function using the official Lua API was added, as you can see in the [source](bench.html) for this benchmark. The Lua script doing the time measurement is found in samples/filter/filterbench.lua. The benchmark lib is built when you do make &lt;PLATFORM&gt;.
 
-For more or less empty racing through a table, d'Arc is up to 2 times faster for small tables and more than 3 times faster for bigger ones, as compared to the official Lua API.
-    ---------------------------------------------------------------------------------
-    12 elements in t={{'help!',{22, {'Oh damn.', 1}, 'foo'}, 'luck', 'struck'}, nil} 
-    100000x filter.check_official(t)        392ns/element         false 
-    100000x filter.check(t)                 250ns/element  63%,   false
-    ---------------------------------------------------------------------------------
-    10 elements in t[randstr(i)]=randstr(i) 
-    100000x filter.check_official(t)        430ns/element         false 
-    100000x filter.check(t)                 230ns/element  53%,   false
-    ---------------------------------------------------------------------------------
-    1000 elements in t[randstr(i)]=randstr(i) 
-    1000x filter.check_official(t)          280ns/element         false 
-    1000x filter.check(t)                    80ns/element  28%,   false
-    ---------------------------------------------------------------------------------
-    10000 elements in t[randstr(i)]=randstr(i) 
-    100x filter.check_official(t)           440ns/element         false 
-    100x filter.check(t)                    130ns/element  29%,   false
-    ---------------------------------------------------------------------------------
-    100000 elements in t[randstr(i)]=randstr(i) 
-    10x filter.check_official(t)            520ns/element         false 
-    10x filter.check(t)                     160ns/element  30%,   false
-    ---------------------------------------------------------------------------------
-    10000 elements in t[i*100]=randstr(i)      
-    100x filter.check_official(t)           420ns/element         false 
-    100x filter.check(t)                    120ns/element  28%,   false
-    
-This is the benchmarked code:
+For simply racing through a table, d'Arc is less than 2 times faster for small tables and more than 5 times faster for bigger ones, as compared to the official Lua API, for both Lua and LuaJIT. Because of the reason for that speed up, the factor will most likely continue to increase with table size, also beyond the number of elements measured here.
+
+## Lua 5.1.4
+
+**lua  samples/filter/filterbench.lua**
+
+       (
+      ( ) Swearword filter - a d'Arc benchmark (filter4bench)
+          Lua 5.1 official vs. d'Arc 0.2.0
+      
+      ---------------------------------------------------------------------------------
+      12 elements in t={{'help!',{22, {'Oh damn.', 1}, 'foo'}, 'dork', 'struck'}, nil} 
+      1000000x filter.check_official(t)              143ns/element         false 
+      1000000x filter.check(t)                        85ns/element  59%,   false
+      ---------------------------------------------------------------------------------
+      10 elements in t[randstr(i)]=randstr(i) 
+      1000000x filter.check_official(t)              173ns/element         false 
+      1000000x filter.check(t)                        92ns/element  53%,   false
+      ---------------------------------------------------------------------------------
+      1000 elements in t[randstr(i)]=randstr(i) 
+       10000x filter.check_official(t)              100ns/element         false 
+       10000x filter.check(t)                        20ns/element  19%,   false
+      ---------------------------------------------------------------------------------
+      10000 elements in t[randstr(i)]=randstr(i) 
+        1000x filter.check_official(t)              100ns/element         false 
+        1000x filter.check(t)                        29ns/element  28%,   false
+      ---------------------------------------------------------------------------------
+      100000 elements in t[randstr(i)]=randstr(i) 
+         100x filter.check_official(t)              174ns/element         false 
+         100x filter.check(t)                        25ns/element  14%,   false
+      ---------------------------------------------------------------------------------
+      10000 elements in t[i*100]=randstr(i)      
+       10000x filter.check_official(t)              126ns/element         false 
+       10000x filter.check(t)                        22ns/element  17%,   false
+
+
+
+## LuaJIT 2
+
+d'Arc benefits from JIT for small table sizes. That may be owed to the fact that the overhead of calling the function is visible with small tables. But the absolute speed you can reach using d'Arc is about the same for Lua and LuaJIT. Sparse arrays seem to perform better, for d'Arc, using classic PUC Lua (last row). If that is not a mistake in measurement, I can only speculate that it may point to differences in the implementation for hash calculation and hash look ups. Lua and LuaJIT are on a level playing field there. There is no JIT magic involved in such basics.
+
+**luajit samples/filter/filterbench.lua**
+      
+       (
+      ( ) Swearword filter - a d'Arc benchmark (filter4benchjit)
+          LuaJIT 2.0.0-beta7 official vs. d'Arc 0.2.0
+      
+      ---------------------------------------------------------------------------------
+      12 elements in t={{'help!',{22, {'Oh damn.', 1}, 'foo'}, 'dork', 'struck'}, nil} 
+      1000000x filter.check_official(t)               89ns/element         false 
+      1000000x filter.check(t)                        47ns/element  52%,   false
+      ---------------------------------------------------------------------------------
+      10 elements in t[randstr(i)]=randstr(i) 
+      1000000x filter.check_official(t)              101ns/element         false 
+      1000000x filter.check(t)                        45ns/element  44%,   false
+      ---------------------------------------------------------------------------------
+      1000 elements in t[randstr(i)]=randstr(i) 
+       10000x filter.check_official(t)               86ns/element         false 
+       10000x filter.check(t)                        19ns/element  22%,   false
+      ---------------------------------------------------------------------------------
+      10000 elements in t[randstr(i)]=randstr(i) 
+        1000x filter.check_official(t)               85ns/element         false 
+        1000x filter.check(t)                        29ns/element  34%,   false
+      ---------------------------------------------------------------------------------
+      100000 elements in t[randstr(i)]=randstr(i) 
+         100x filter.check_official(t)              157ns/element         false 
+         100x filter.check(t)                        24ns/element  15%,   false
+      ---------------------------------------------------------------------------------
+      10000 elements in t[i*100]=randstr(i)      
+       10000x filter.check_official(t)               99ns/element         false 
+       10000x filter.check(t)                        30ns/element  29%,   false
+
+## Source
+
+This is the relevant part of the benchmarked code:
 
 ### d'Arc
 
@@ -48,7 +96,7 @@ This is the benchmarked code:
     
 ### Lua API
 
-If somebody can point me to a better implementation, please let me know.
+And this is the comparison code that uses the official Lua API. Both snippets are compiled and run with no modification for both Lua and LuaJIT. And in case you can point me to a better implementation of the below, please let me know. It's plain vanilla, basically lifted from the Lua 5.1 manual.
 
     static int word_filter_official(lua_State *L, int t) {
     
@@ -76,11 +124,16 @@ If somebody can point me to a better implementation, please let me know.
         return notfound;    
     }
 
-For both, inspect was set to take no time:
+For the benchmarking, filter4bench is compiled with LESS_SKEW_FOR_BENCHMARK switched on, which results into short cutting the 'filtering', so that it does not skew the measurement of the table traversion. This define basically makes the inspect() function return right away, and take no time:
 
     int inspect(const char *string)
     {
         return 1;
     }
 
+## Hardware
 
+    Processor      : 2 GHz Intel Core 2 Duo (1 cpu, 2 cores) 3 MB L2 Cache
+    Memory         : 4 GB DDR3 1 GHz
+    Bus            : 1 GHz
+    System         : Mac OS X 10.5 - Darwin 9.8.0

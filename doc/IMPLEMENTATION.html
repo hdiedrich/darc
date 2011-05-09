@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Implementation <a name=implementation></a></title>
+	<title>Implementation</title>
 	<style type="text/css"><!--
 		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
 	                text-align: justify;	
@@ -84,13 +84,14 @@
         div.rightinset 
                 { border: 2px solid white;
                   margin-left: 1em;
-                  padding: 2em;
+                  padding: 2.5em;
                   background-color: #c25036;
+                  color: #f4eca8;
                   float: right;
                   width: 40;
                   border-radius: 1em;
                   -moz-border-radius: 1em;
-                  font-size: 0.8em;
+                  font-size: 1em;
                   text-align: justify; }
 --></style>
 </head>
@@ -100,16 +101,22 @@
 </div>
 <div class=body>
 
-<p>d'Arc 0.1.0</p>
-<h2>Implementation <a name=implementation></a></h2>
+<p>d'Arc 0.2.0</p>
+<h2>Implementation</h2>
 
-<p>As for the example mentioned before: accessing a string. It's illuminating to look at what happens behind the scenes. The official APIgoes through quite some hops. Let's follow the code for the d'Arc macro <strong>XLUA_STRING()</strong> for Lua 5.1, and then the implementation of the official API in Lua 5.1, which is <strong>lua_tostring()</strong>. </p>
+<p><strong>Since you asked.</strong></p>
 
-<p>The difference is no outrage, even though it may look like it at a casual glance. The functions that are called as part of the handling in the official Lua API don't do a lot in most cases. But they still cost a function call. While d'Arc goes directly to it, calls no function and needs no stack arithmetics, but operates on the <em>actual</em> VM value and table structures.</p>
+<p>As for the example mentioned before: accessing a string. It's illuminating to look at what happens behind the scenes. This page provides some sort of a moderated step-into.  </p>
 
-<h3>d'Arc sub API</h3>
+<p>The official API goes through quite some hops. Let's follow the code for the d'Arc macro <strong>XLUA_STRING()</strong> for Lua 5.1, and compare it to the implementation of string access in the official API in Lua 5.1, which is <strong>lua_tostring()</strong>. </p>
 
-<p>Tracing a string access:</p>
+<p>The difference between the two implementations, i.e. between the official API and d'Arc, is <strong>not</strong> an outrage. And even though the official API workload looks crowded at a casual glance: in most cases, the functions that are called  behind the scenes by the official Lua API do <strong>not</strong> do a lot. But they still cost a function call each. Which in a loop can amount to a significant waste of time. d'Arc on the other hand goes directly to it, calls no functions and needs no stack arithmetics either, which the official API must perform to calculate the position of any <em>actual</em> VM value on the stack.</p>
+
+<p>Traversing a table is a different story, d'Arc saves a lot more time there. More on that, below. But let's stick with accessing a string for now:</p>
+
+<h3>d'Arc - String Access</h3>
+
+<p>Trace of a string access:</p>
 
 <pre><code>char *s = XLUA_STRING(tval)
 </code></pre>
@@ -133,9 +140,9 @@
 <p>check_exp(), and its first parameter, are usually transparent but can be switched on to be executed as an assertion.</p>
 
 
-<h3>Lua API</h3>
+<h3>Official API - String Access</h3>
 
-<p>Tracing a string access:</p>
+<p>Trace of a string access:</p>
 
 <pre><code>lua_tostring(L,i)
 </code></pre>
@@ -209,13 +216,21 @@
 </code></pre>
 
 
+<p>The above also demonstrates what it is, that d'Arc cuts out. </p>
+
+<p>Again: if you inspect the code closely, you will find that the official Lua API's functions do not do anything too expensive. They calculate a bit, test a bit, but return fast. Most of the body is almost always skipped. Still, it makes a difference to cut this out. Not the least, the mere overhead of function calling.</p>
+
+<p>However, somewhere at the beginning of your own code you have to get a Lua value into your fangs and that will require you to use the usual Lua API calls. The saving starts after the first access.</p>
+
+<p>But for example for traversing a table, you need to go through the Lua API only once, to get the table itself. All nested elements are retrieved directly, using d'Arc.</p>
+
 <h2>Traversal</h2>
 
-<p>Let's take a look at the decisive game, table traversion. This time, Lua 5.1.4 first:</p>
+<p>So let's take a look at a more interesting example, table traversion. This time, Lua 5.1.4 first:</p>
 
 <h3>Lua API</h3>
 
-<p>A typical traversal using the Lua C API could look like this (From the <a href="http://www.lua.org/manual/5.1/manual.html#2.8">Lua Manual</a>):</p>
+<p>A typical traversal using the Lua C API may look like this (From the <a href="http://www.lua.org/manual/5.1/manual.html#2.8">Lua Manual</a>):</p>
 
 <pre><code>/* table is in the stack at index 't' */
 lua_pushnil(L);  /* first key */
@@ -229,7 +244,7 @@ while (lua_next(L, t) != 0) {
 }
 </code></pre>
 
-<p>This example by Roberto uses lua_next(), which in turn calls luaH_next(), which uses findindex(). </p>
+<p>This loop calls lua_next() for every iteration, which calls luaH_next(), which uses findindex(). See below.</p>
 
 <p>lapi.c:973: <strong>lua_next()</strong> Lua 5.1.4</p>
 
@@ -250,9 +265,9 @@ while (lua_next(L, t) != 0) {
 }
 </code></pre>
 
-<p>And we are also seeing index2adr() again, as with the string example above: the overhead that results from using the Lua stack mechanism. We'll ignore it at this point, but the payload in this case is created using lua_type(), which again calls index2adr. So it's called three times for each iteration. </p>
+<p>And we are also seeing index2adr() again, as with the string example above: the overhead that results from using the Lua stack mechanism. We'll ignore it at this point, but the payload in this case, getting the type name, is created using lua_type(), which again calls index2adr(). So as it turns out, in this example specificly, index2adr() is implicitely called three times each iteration.</p>
 
-<p>Usually, this function will return almost immediately. But it's still some pointer calculating and a function call involved, for every value you are retrieving.</p>
+<p>Usually, this function will return almost immediately. But it's still a function call and some pointer calculating involved, for every value retrieved.</p>
 
 <p>lapi.c:49: <strong>index2adr()</strong> Lua 5.1.4</p>
 
@@ -340,18 +355,20 @@ static int findindex (lua_State *L, Table *t, StkId key) {
 }
 </code></pre>
 
-<p>Even for the fastest variant, a table that is a pure array, the above is a lot more effort than what d'Arc does. The worse situation are associative arrays, for example when iterating through a table that has string keys. It looks like every key is <strong>searched for</strong>, although the task is merely to cover them all. This case might make for a geometric loss of performance when iterating through tables using the official API. With d'Arc, the curve may be flat. Sorry for having no hard data for the specific case yet.</p>
+<p>Even for the fastest variant, a table that is a pure array, the above is a lot more effort than what d'Arc does. A worse situation are associative arrays, i.e. tables that use string keys. Every key is hashed and potentially searched for, although the task is merely to cover all elements, with no regard to the key. This case can make for geometric loss of performance when iterating through tables using the official API. With d'Arc, the curve can be almost flat. This is the same for both Lua and LuaJIT and caused by the design of the official Lua API.</p>
 
 <h3>d'Arc sub API</h3>
 
-<p>So how does the traversal of a table look on the ground when using d'Arc? The main differences to the official API implementation are:</p>
+<p>So how does the traversal of a table look on the ground when using d'Arc? Basically, you simply use a fold function, with a callback that is applied to each element met.</p>
+
+<p>The main differences to the official API implementation are:</p>
 
 <ol>
     <li><p>values are accessed directly, skipping stack arithmetics.</p></li>
-    <li><p>the avoidance of any searches for keys, simply iterating through the hash.  </p></li>
+    <li><p>the avoidance of any hashing or searches for keys, simply iterating through the hashes.</p></li>
 </ol>
 
-<p>First, all table elements in the internal array part of the table are traversed, then, all hash elements:</p>
+<p>The implementation of darc_traverse() looks like this. First, all table elements in the internal array part of the table are traversed, then, all hash elements:</p>
 
 <p>darc.c:49: <strong>darc_traverse()</strong></p>
 <pre><code>int darc_traverse(const Table *t, foldfunc fold, void *cargo) {
@@ -363,12 +380,14 @@ static int findindex (lua_State *L, Table *t, StkId key) {
 
 
 
-<div class=rightinset style='width:60%'>
-It's not relevant here - but the gist of it is that Lua automatically balances the hash and the array part of the table and the next power of two plays a role in the decision were to put new elements: in the hash, or in the array part. It is not the case that all integer keys always reside in the array part.
+<div class=rightinset style='width:40%'>
+It's not relevant here - but the gist of this is that Lua automatically balances the hash and the array part of the table and the respective next power of two of the currently reserved size plays a role in the decisions of the Lua table implementation as to were to put new elements: in the hash, or in the array part. <b>It is NOT the case that all integer keys always reside in the array part.</b>
 </div>
 
 
-<p>Note: since it may be confusing to read, the power of two logic in the following is not intrinsic to d'Arc but courtesy of the rehash() function in the original Lua 5.1.4 source, ltable.c:333. </p>
+<p>Since it may be confusing to read, please note that the power of two logic in the following source is not intrinsic to d'Arc but courtesy of the original rehash() function in the original Lua 5.1.4 source, ltable.c:333. darc_traverse() is modeled after the table rehash functions, as they represent a highly optimized implementation of a table traversion that the Lua and LuaJIT VMs employ internally, for their own immediate needs. The rehash functions should be considered transparent for the Lua user, they re-size the pre-allocated internal table space when the need arises.</p>
+
+<p>So in the function below, that array part is traversed, one element after the other. There is no actual pointer arithmetic involved. The loop is quite tight.</p>
 
 <p>darc.c:67: <strong>darc_array_part()</strong></p>
 <pre><code>int darc_array_part (const Table *t, foldfunc fold, void *cargo) {

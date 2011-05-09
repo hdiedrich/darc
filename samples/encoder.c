@@ -1,9 +1,9 @@
 /**-------------------------------------------------------------------------***
 *** Package     : d'Arc - fast Lua sub API                                  ***
-*** File        : darc.h                                                    ***
+*** File        : encoder.c                                                 ***
 *** Description : macros for VM value and table node access, Lua & LuaJIT   ***
-*** Version     : 0.0.1 / sketch                                            ***
-*** Requirement : Lua 5.1.4 or LuaJIT 2 bet 6                               ***
+*** Version     : 0.2.0 / alpha                                             ***
+*** Requirement : Lua 5.1.4 or LuaJIT 2 beta 6+                             ***
 *** Copyright   : April 1st 2011 Henning Diedrich                           ***
 *** Author      : H. Diedrich <hd2010@eonblast.com>                         ***
 *** License     : see file LICENSE                                          ***

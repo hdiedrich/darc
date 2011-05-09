@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>d'Arc 0.1.0</title>
+	<title>d'Arc 0.2.0</title>
 	<style type="text/css"><!--
 		body 	  { font-family: "Century Gothic", Verdana, Helvetica, Arial, sans-serif; 
 	                text-align: justify;	
@@ -84,13 +84,14 @@
         div.rightinset 
                 { border: 2px solid white;
                   margin-left: 1em;
-                  padding: 2em;
+                  padding: 2.5em;
                   background-color: #c25036;
+                  color: #f4eca8;
                   float: right;
                   width: 40;
                   border-radius: 1em;
                   -moz-border-radius: 1em;
-                  font-size: 0.8em;
+                  font-size: 1em;
                   text-align: justify; }
 --></style>
 </head>
@@ -100,14 +101,15 @@
 </div>
 <div class=body>
 
-<h1>d'Arc 0.1.0</h1>
+<h1>d'Arc 0.2.0</h1>
 
-<p>d'Arc is a small, fast, straight forward, you better read-only, <strong>sub-API</strong> interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 6. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like <a href="etc/NAME.html">Jeanne</a>. </p>
+<p><strong>d'Arc is a small, fast, straight forward, you better read-only, sub-API interface to Lua data for both Lua 5.1.4 and LuaJIT 2 beta 7. It's not for the faint of heart but really sweet. Using it may get you fired. Or promoted. Or both, just like <a href="etc/NAME.html">Jeanne</a>.</strong></p>
 
-<p>As evidenced by the existence of LuaJIT, speed can play a role in Lua projects. d'Arc lets you read out Lua variables and tables <a href="doc/BENCHMARKS.html">as fast as possible</a>, for both Lua and LuaJIT main branch versions, skipping the slow parts where you'd search for keys and propagate values via the Lua stack. Traversing a table, and reading out a variable, wastes a lot of time when done right, i.e. using the official API. Which - life can be so confusing - implies that under some circumstances doing it right may not be doing it right after all. It's complicated. Jeanne to the rescue. d'Arc is faster, use it for in-house read-only stuff that you can control. </p>
+<p>d'Arc lets you read out Lua variables and tables as <a href="doc/BENCHMARKS.html">fast</a> as possible, for both Lua and LuaJIT. Done right, i.e. using the official Lua API, you will always be wasting quite a bit of time when traversing a table, or reading out a variable. Which - life can be so confusing - implies that under some circumstance doing it right may not be right after all. Like, if performance matters. It's complicated. Jeanne to the rescue. </p>
 
+<p>Using d'Arc allows you to avoid the repeat look ups, hash calculations and stack writes that bog down table traversion and variable access when using the official API for Lua or LuaJIT. And once you have accessed a variable, you keep a direct C pointer to its value, rather than going via a look up and the stack again. When traversing a table, d'Arc uses the existing, implicit pointers to the next elements rather than doing separate look ups for each and every individual key, as the official API does.</p>
 
-<p>The main point is, that you could traverse tables faster and access variables more directly. It may be helpful to look at the  <a href="doc/IMPLEMENTATION.html">implementation</a> of d'Arc vs the official API at the C level. On the face of it, d'Arc looks like this:</p>
+<p>As an example, here is the <a href="doc/IMPLEMENTATION.html">implementation</a> of d'Arc vs. the official API, at the C level. On the face of it, d'Arc looks like this:</p>
 
 <pre><code>const char *s = XLUA_STRING(tval); 
 </code></pre>
@@ -119,28 +121,37 @@
 
 
 
-<div class=rightinset style='width:40%'>
-With Jeanne, in the end, it didn't really matter were the voices came from that she heard. She was highly effective for them and kicked some butt, they so hated her for it, just killing her wouldn't do. Same for your projects: in the face of world history, maybe it matters less that inevitably some people will feel you are cheating when using something as dirty as d'Arc to be faster than a nice, clean API call. To wit, playing by the rules will safe them re-doing 50 lines of code in case Lua publishes a next version but will waste gazillions of cpu cycles that translate into millions of wasted Megawatts, wasted life time and dead trees! Right. So do the right thing, revel in their frantic screams and do something nice. And dirty. And even green, too!
+<div class=rightinset style='width:40%; color:#fff0f0;'>
+With Jeanne, in the end, it didn't really matter were the voices came from that she heard. She was highly effective for them and kicked some butt. They so hated her for it, just killing her wouldn't do. Same for your projects: in the face of world history, maybe it matters less that inevitably some people will feel you are cheating when using something as dirty as d'Arc to be faster than a nice, clean API call. To wit, playing by the rules will safe them re-doing 50 lines of code in case Lua publishes a next version but will waste gazillions of cpu cycles that translate into millions of wasted Megawatts, wasted life time and dead trees! Right. So do the right thing, revel in their frantic screams and do something nice. And dirty. And even green, too!
 </div>
 
 
-<p>The calls are not only different in form but as the different parameters suggest, they are used in different places. Which is what provides for the performance gain.</p>
+<p>The calls are not only different in form but as the different parameters suggest, they are used in different places. Which is what provides for the performance gain. With d'Arc you use pointers to variable structures (e.g. 'tval'), not the Lua state and stack index (L, and index).</p>
 
-<p>Watch out when you get all enthusiastic and start feeling like writing to the variables. That could have all sorts of funky consequences that you will not have plumbed until you tested string interning, gc, longjumping, yielding and parallel processes. Stay with reading unless you know what you are doing. Which is also the requirement to use this in the first place, in case that hadn't transpired yet.</p>
-
-<h2>Usage</h2>
-
-<p>See <a href="samples/filter/filter.html">sample/filter/filter.c</a></p>
-
-<p>Basically you get a bunch of oyster shucker macros to test for type and for direct access of the actual contents of the VM value structures. </p>
-
-<p>Plus, one function to traverse a table in low-level flight.</p>
-
-<p>The macros and that fold function do not alter the Lua stack and no values are copied. You could write to and change the variable contents, but that's not the intention at this point. There are side effects, e.g. strings are internalized so changeing one will change all of the same value, etc.</p>
+<p>Watch out when you get all enthusiastic and start feeling like writing to the variables. That can have all sorts of consequences that you will not have plumbed until you thought about string interning, garbage collection, longjumping, yielding and parallel processes. Stay with reading unless you know what you are doing. Which, anyway, happens to be the requirement for using d'Arc in the first place. In case that hadn't transpired yet. </p>
 
 <p>Maybe memorize it like this: Jeanne listened to God and that worked great for a while. But it didn't necessarily work the other way around when she got in trouble. The quintessential read-only: God is listening. But he likes you to take care of the action.</p>
 
-<p><strong>Type Tests</strong></p>
+<h2>Usage</h2>
+
+<p>See <a href="doc/sample.html">sample/filter/filter.c</a></p>
+
+<p>Basically you get a bunch of oyster shucker macros for direct access of the actual contents of the VM value structures, and to test for the content types (string, number, table etc).</p>
+
+<p>Plus, one function to traverse a table in low-level flight.</p>
+
+<p>The macros and that fold function do not alter the Lua stack and no values are copied. You could write to and change the variable contents, but that's not the intention at this point. There are side effects, e.g. strings are <a href="http://en.wikipedia.org/wiki/String_interning">interned</a> so changing a string will change all of the same value, etc.</p>
+
+<p><strong>1) Stack Access</strong></p>
+
+<pre><code>TValue *o = XLUA_INDEX_TO_ADDRESS(L, index);
+</code></pre>
+
+<p>This returns a TValue pointer of a value residing on the Lua stack. Usually, that's your starting point. As mentioned before, d'Arc does not alter the Lua stack.</p>
+
+<p>If you're only starting out with Lua C programming: the Lua stack is not the C stack, it's a specific, Lua VM structure used for the values the Lua VM swishes around.</p>
+
+<p><strong>2) Type Tests</strong></p>
 
 <pre><code>XLUA_IS_NIL(o)      
 XLUA_IS_TRUE(o)      
@@ -155,10 +166,10 @@ XLUA_IS_THREAD(o)
 XLUA_IS_LIGHTUSERDATA(o)
 </code></pre>
 
-<p>These take a TValue pointer as argument and return 0 (false) or 1 (true).</p>
+<p>These take a TValue pointer as argument (o) and return 0 (false) or 1 (true).</p>
 
 
-<p><strong>Value Access</strong></p>
+<p><strong>3) Value Access</strong></p>
 
 <pre><code>XLUA_BOOLEAN(o)         
 XLUA_NUMBER(o)              
@@ -167,58 +178,58 @@ XLUA_STRING_LENGTH(o)
 XLUA_TABLE(o)               
 </code></pre>
 
-<p>Take a TValue pointer as argument and return int, int, char *, size_t, TValue respectively. Remember, Lua allows \0 as part of strings, and strings are interned.</p>
+<p>These also take a TValue pointer as argument (o) and return int, int, char *, size_t, TValue respectively. Remember, Lua allows \0 as part of strings, and strings are interned.</p>
 
-<p><strong>Table Entry Access</strong></p>
+<p>And to say that again: the above compiles for both Lua and LuaJIT, that's the point.</p>
 
-<pre><code>XLUA_NODE_KEYVAL(node)  
-XLUA_NODE_VAL(node)     
+<p><strong>4) Table Traversal</strong></p>
+
+<pre><code>int darc_traverse(const Table *t, foldfunc fold, void *state);
 </code></pre>
 
-<p>The results of these are TValue pointers that can be used as arguments to the above type test and value access macros. But you'd only use these if you start decomposing and reinterpreting darc.c to traverse tables yet more streamlined than by using darc_traverse(). Otherwise, I think you won't run into a 'node' in the first place. I might be wrong.</p>
+<p>This function is used to traverse a table, see the sample below. It is implemented in a fashion akin to the internal rehash functions of the VMs, which of course are highly optimized. The function applies the 'foldfunc' callback function that you define, to every table element. </p>
 
-<p><strong>Stack Access</strong></p>
-
-<pre><code>XLUA_INDEX_TO_ADDRESS(L, index) 
+<pre><code>typedef int (*foldfunc)(TValue *o, void *state);
 </code></pre>
 
-<p>This returns a TValue pointer of a value residing on the Lua stack. Usually, that's your starting point. As mentioned before, d'Arc does not alter the Lua stack.</p>
+<p>The sample below will make things quite clear.</p>
 
-<p>If you're only starting out with Lua C programming: the Lua stack is not the C stack, it's a specific, Lua VM structure used for the values the Lua VM swishes around.</p>
+<p><strong>5) Table Entry Access</strong></p>
 
-<p><strong>Table Traversal</strong></p>
-
-<pre><code>typedef int (*foldfunc)(TValue *o, void *cargo);
-
-int darc_traverse(const Table *t, foldfunc fold, void *cargo);
+<pre><code>TValue *o = XLUA_NODE_KEYVAL(node);     
+TValue *o = XLUA_NODE_VAL(node);        
 </code></pre>
 
-<p>This function is used to traverse a table, see the sample, below. It is implemented in a fashion akin the internal rehash functions of the VM and applies the 'foldfunc' function, that you assign to it, to every table element. Traversing down into a nested table that you encounter, has to be initiated in that foldfunc. Which is completely straight forward: since where you start from is usually a TValue, which could be a table, or not. You would usually start with a call to your 'foldfunc', not darc_traverse(). Your foldfunc then calls darc_traverse() if appropriate. Or it does something else completely, e.g. in case the top value is not a table anyway. Now, because your foldfunc will usually call darc_traverse() with itself as argument, that darc_traverse() call will be the one and only call you write, and will handle all nested tables recursively. </p>
+<p>Less frequently of interest, these functions are used on the 'nodes' that tables consist of: each node combines one key and its value. the results of these macros are TValue pointers that e.g. can be used as arguments to the type test and value access macros listed above. You may find use for these two macros, if you started decomposing and reinterpreting the darc.c source, to traverse tables yet <em>more</em> streamlined than by using darc_traverse(). Otherwise,  you probably won't run into nodes in the beginning. But maybe once you dig deeper, so here you are.</p>
 
-<p>Maybe just read on? The sample will make it quite clear.</p>
 
 <h2>Sample</h2>
 
 <p>A swearword filter, which returns true when a bad word is found in a Lua value:</p>
 
-<pre><code>&gt; v={{'help!',{22, {'Oh damn.', 1}, 'foo'}, 'luck', 'struck'}, nil}
+<pre><code>&gt; v={{'help!',{22, {'Oh fuck', 1}}, nil}
 &gt; print(filter.check(v))
 true
 </code></pre>
 
-<p>It is implemented in <a href="samples/filter/filter.html">sample/filter/filter.c</a>. Most of that file is boilerplate to get it to play with Lua as a library. The core of it is the following function. It is a <strong>foldfunc</strong> function, which is defined as</p>
+<p>The source is in <a href="doc/sample.html">sample/filter/filter.c</a>. </p>
 
-<pre><code>typedef int (*foldfunc)(TValue *o, void *cargo);
+<p>Most of that file is boilerplate to get it to play with Lua as a library. The core of it is the following function. This is such a <strong>foldfunc</strong> function, as discussed above, which is of the type</p>
+
+<pre><code>typedef int (*foldfunc)(TValue *o, void *state);
 </code></pre>
 
-<p>This function is the central vehicle of the table traversal in d'Arc: <br/>
-1. the function is passed a Lua VM value to process, TValue *o. <br/>
-2. if you need state for your work inside the table, and to return results, pass a data structure in by means of the cargo pointer <br/>
-3. if it returns 0, the traversal is broken off and at the top level, 0 is returned  </p>
+<p>This function is the central vehicle of the table traversal in d'Arc:  </p>
 
-<p>In the case of filter.c, you can see how it indirectly calls itself, by passing itself to darc_traverse as function pointer. This should be the usual way to traverse into nested tables.</p>
+<ol>
+    <li><p>the foldfunc is passed a Lua VM value to process, TValue *o. This is a table element, and it can also be a nested table.</p></li>
+    <li><p>if you need to collect state for your work inside the table, and to return results, you can pass a data structure in using the <strong>state</strong> pointer  </p></li>
+    <li><p>if foldfunc returns 0, the traversal is stopped, and at the top level, 0 is returned</p></li>
+</ol>
 
-<pre><code>int lame_word_filter(TValue *subject, void *cargo)
+<p>In the case of the filter.c sample, you can follow how the foldfunc <em>indirectly calls itself</em>, by passing itself to darc_traverse as function pointer. This should be the usual way to traverse into nested tables.</p>
+
+<pre><code>int lame_word_filter(TValue *subject, void *state)
 {
     if(XLUA_IS_STRING(subject))
 
@@ -228,16 +239,18 @@ true
     else if(XLUA_IS_TABLE(subject))
 
         /* traverse down into a table. */
-        return darc_traverse(XLUA_TABLE(subject), lame_word_filter, cargo); 
+        return darc_traverse(XLUA_TABLE(subject), lame_word_filter, state); 
 
     /* ignore all other types. */
     return 1;
 }
 </code></pre>
 
-<p>To reiterate: this source compiles for Lua and LuaJIT. It does not use the official Lua API but accesses the values more directly with the macros XLUA_IS_STRING(), XLUA_STRING() etc. The function is not optimized to the hilt so as to remain sufficiently instructive.</p>
+<p>Generally, traversing down into a <em>nested</em> table that you encounter, should be <em>initiated</em> in that foldfunc. Which is completely straight forward: since where you start from is usually a TValue, which could be a table, or not. Therefore, seen from the outer, Lua-registered function, you would usually start with a call to your 'foldfunc', not darc_traverse(). It's your foldfunc that then calls darc_traverse() first, if appropriate. (Or it does something else completely, e.g. in case the top value is not a table anyway.) Now, because your foldfunc will usually call darc_traverse() with itself as argument, that darc_traverse() call inside your foldfunc will be the one and only call you write, and will handle all nested tables recursively. Are you with me? If you know a better way to put this, don't hesitate to let me know.</p>
 
-<p>The above function is tied into Lua by this generic function:</p>
+<p>And, again: this source compiles for Lua and LuaJIT, even though it doesn't use the official API. It accesses the values more directly, eg. using the macros XLUA_IS_STRING(), XLUA_STRING() etc. On the other hand, the source shown here is not optimized to the hilt so as to remain instructive.</p>
+
+<p>The above function lame_word_filter() is tied into Lua by this generic function:</p>
 
 <pre><code>static int filter_check(lua_State *L) {
 
@@ -252,16 +265,14 @@ true
 }
 </code></pre>
 
-<p>For this sample, the integer return value was quite usefull. It signals if the traversal was complete (1) or broken off (0). This can be used to signal if an offending word was found, or not. For more interesting stuff, you would use the cargo pointer.</p>
+<p>For this sample, the <strong>integer return value</strong> is quite usefull. It suffices to report back 'yes' or 'no'. And that's what it always does, it signals if the traversal was complete (1) or broken off (0). In this case, that is used to report back whether an offensive word was found, or not. For more interesting stuff, you would use the state pointer.</p>
 
-
-
-<p>If you read ALL of this, I'd like to hear from you. Please send photo and feedback to hd2010@eonblast.com, or send me a message on github.com.  </p>
+<p>Please send feedback, advise and corrections to hd2010@eonblast.com, or send me a <a href="https://github.com/inbox/new/hdiedrich">message</a>, or open an <a href="https://github.com/hdiedrich/darc/issues">issue</a> on github.com.  </p>
 
 <p>Thanks, <br/>
 Henning</p>
 
-<p><center><a href=index.html>Home</a></center></p>
+<p><center><a href="index.html">Home</a></center></p>
 <br />
 <center>
 <small style='color:gray'>

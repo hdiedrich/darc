@@ -2,17 +2,17 @@
 *** Package     : d'Arc - fast Lua sub API                                  ***
 *** File        : darc.h                                                    ***
 *** Description : macros for VM value and table node access, Lua & LuaJIT   ***
-*** Version     : 0.1.0 / alpha                                             ***
-*** Requirement : Lua 5.1.4 or LuaJIT 2 beta 6                              ***
+*** Version     : 0.2.0 / alpha                                             ***
+*** Requirement : Lua 5.1.4 or LuaJIT 2 beta 7                              ***
 *** Copyright   : April 1st 2011 Henning Diedrich                           ***
 *** Author      : H. Diedrich <hd2010@eonblast.com>                         ***
 *** License     : see file LICENSE                                          ***
 *** Created     : 23 Mar 2011                                               ***
-*** Changed     : 07 Apr 2011                                               ***
+*** Changed     : 08 May 2011                                               ***
 ***-------------------------------------------------------------------------***
 ***                                                                         ***
 ***  d'Arc is a faster way to access Lua values and traverse tables in C.   ***
-***  It supports Lua 5.1.4 and LuaJIT 2 beta 6 and is loathable for not     ***
+***  It supports Lua 5.1.4 and LuaJIT 2 beta 7 and is loathable for not     ***
 ***  using the Lua API. Please use it only if you are 18+ years old.        ***
 ***                                                                         ***
 ***-------------------------------------------------------------------------***
@@ -22,7 +22,7 @@
 ***                                                                         ***
 ***-------------------------------------------------------------------------***
 
-                            (   (    (               
+                            (  (    (               
                             )\ ))\   )\    (         
                            (()/((_)(((_)(  )(    (   
                             ((_) ) )\ _ )\(()\   )\  
@@ -40,11 +40,11 @@
   #error Please define either LUA_5_1 or JIT_2
 #endif
   
-/**-------------------------------------------------------------------------***
+/**-------------------------------------------------------------------------**\
 ***                                                                         ***
 ***                                LUA 5.1.4                                ***
 ***                                                                         ***
-***-------------------------------------------------------------------------**/
+\**-------------------------------------------------------------------------**/
 
 #ifdef LUA_5_1
 
@@ -90,7 +90,7 @@
 
   #define index2addr(L, index) index2adr(L, index) // eliminate pitfall
 
-/* necessary for Lua code interfacing, taken from Lua source                 */ 
+  /* necessary for Lua code interfacing, taken from Lua source               */ 
 
   /* Lua syncrasies -------------------------------------------------------- */
 

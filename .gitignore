@@ -1,4 +1,4 @@
-# d'Arc 0.0.1
+# ignored files d'Arc 0.2.0 repo
 
 *.o
 *.m
@@ -7,6 +7,8 @@
 *.S
 *.a
 *.so
+*.err
+*.tmp
 *.out
 *.log
 *.bak
@@ -14,6 +16,15 @@
 lua
 luac
 
+out
+err
+tmp
+
+*.c.md
+*.h.md
+
 .DS_Store
 ._.*
 ._*
+
+

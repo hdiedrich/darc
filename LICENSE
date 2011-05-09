@@ -1,6 +1,6 @@
-# d'Arc License
+# d'Arc 0.2 License  
 
-Copyright (c) April 1st 2011 H. Diedrich <hd2010@eonblast.com>
+**Copyright (c) April 1st 2011 Henning Diedrich.**
 
 Permission is  hereby  granted,  free of charge,  to any person
 obtaining  a copy of this software and associated documentation
@@ -22,4 +22,10 @@ HOLDERS  BE  LIABLE FOR  ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT,  TORT  OR OTHERWISE,  ARISING
 FROM,  OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
+
+For the included headers in include/ and original source bits
+from Lua and LuaJIT in src/darc.c, with verbatim permission:
+
+**Copyright (c) 1994–2010 Lua.org, PUC-Rio.**  
+**LuaJIT is Copyright (c) 2005-2011 Mike Pall.**
 

@@ -10,7 +10,7 @@
 <div class=head><img class=head src=etc/images/darc-head.png></div>
 <div class=body>
 
-<h1>d'Arc 0.1.0</h1>
+<h1>d'Arc 0.2.0</h1>
 
 <p><strong>Fast Lua Sub API</strong></p>
 
@@ -27,7 +27,7 @@
 <a class=pages href=etc/NAME.html>Jeanne</a> <br />
 <a class=pages href=doc/BENCHMARKS.html>Benchmarks</a> <br />
 <a class=pages href=doc/IMPLEMENTATION.html>Implementation</a> <br />
-<a class=pages href=src/darc.h>Source</a> <br />
+<a class=pages href=doc/src.html>Source</a> <br />
 <br />
 <a class=pages href=http://hdiedrich.github.com/darc/>Online Home</a> <br />
 <a class=pages href=LICENSE.html>License</a> <br />
@@ -37,16 +37,36 @@
 </td>
 <td>
 
-<p>This is a sub API that reaches below the official Lua API to get to the quick faster. It is only for reading, and except for rare cases, not for setting variables and tables. It doubles only this small area, for all else you keep using the official API. It works for Lua 5.1 and JIT 2. I promise there will be 5.2 support.</p>
+<p><strong>Cave Ab Homine Unius Libri</strong></p>
 
-<p>d'Arc is a lot faster and uses less memory than the Lua API but will have to be adapted to new releases of Lua an LuaJIT, so if you rely on it you may get awfully stuck in the future and die. </p>
+<p>This is a very slim sub API for classic Lua and LuaJIT. It reaches below the official Lua API to get to the quick faster, and often needs less memory. It helps bridging the divide opening up between the PUC and JIT VMs, beyond what's granted in form of the official API, by the powers that be. d'Arc can be used to make libraries for both Lua and LuaJIT faster, and makes it easier to write patches that target both Lua and LuaJIT.</p>
 
-<p>Unless you feel able to understand 50 lines of C code. To adapt them yourself if the spit hits the pan. Which is really what this project is about: to get you started exploring the ground floor of Lua and LuaJIT. Because Lua is so small and concise, using it the way d'Arc invites you to can quickly become as addictive as Lua itself. The VM is a program, too. Make it your own. Your understanding and using of Lua will only benefit. Also note that not using d'Arc is not in itself a guarantee that you will not die.</p>
+<p>d'Arc allows you to use direct (cost-less) C pointers to variable contents, in a clear and unified way. Write once, works for both Lua and LuaJIT. 
+
+<p><strong>Sample</strong></p>
+
+<pre class=code-index>char *s = XLUA_STRING(variable);</pre>
+
+<p>Plus, you get to traverse tables much faster, in both Lua and LuaJIT. Effectively by giving you a fold wrapper for a callback.	</p>
+
+<pre class=code-index>if(XLUA_IS_TABLE(variable))
+        darc_traverse(XLUA_TABLE(variable), my_callback, my_state);</pre>
+
+<p>I know, nothing is supposed to be faster than light these days. But any <a href=http://en.wikipedia.org/wiki/Quantum_entanglement>entangled photon</a> can do the trick. <i>While the world is watching</i>. It's really faster than the JIT API.</p>
 
 <p><strong>Download</strong></p>
 
 <pre class=code-index>git clone git://github.com/hdiedrich/darc.git darc</pre>
 
+
+<p>This sub API is mainly for reading, not for altering variables. For that, you'd keep using the official API. d'Arc works for Lua 5.1 and JIT 2.0. There will be 5.2 support.</p>
+
+<p><strong>Mortal Dangers</strong></p>
+
+<p>d'Arc will have to be adapted to new releases of Lua or LuaJIT. So if you rely on it - and you are really lame - you may get awfully stuck in the future and die. </p>
+
+<p>Unless you feel able to understand 50 lines of C code, that is. To adapt d'Arc yourself if the spit hits the pan. Which is really what this project is about: to get you started exploring the ground floor of Lua and LuaJIT. Because Lua is so small and concise, using it the way d'Arc invites you to, can quickly become as addictive as Lua itself. The VMs are programs, too. Make them your own. Learn from the geniuses. Your understanding and use of Lua will only benefit.</p>
+<p>Also note that not using d'Arc is not in itself a guarantee that you will not die. And if you find it, will you send me the URL where it says that the official Lua API will never change?</p>
 
 </td>
 </tr>

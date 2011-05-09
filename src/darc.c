@@ -2,22 +2,24 @@
 *** Package     : d'Arc - fast Lua sub API                                  ***
 *** File        : darc.c                                                    ***
 *** Description : macros for VM value and table node access, Lua & LuaJIT   ***
-*** Version     : 0.1.0 / alpha                                             ***
-*** Requirement : Lua 5.1.4 or LuaJIT 2 beta 6                              ***
+*** Version     : 0.2.0 / alpha                                             ***
+*** Requirement : Lua 5.1.4 or LuaJIT 2 beta 7                              ***
 *** Copyright   : April 1st 2011 Henning Diedrich                           ***
 *** Author      : H. Diedrich <hd2010@eonblast.com>                         ***
 *** License     : see file LICENSE                                          ***
 *** Created     : 01 Apr 2011                                               ***
-*** Changed     : 07 Apr 2011                                               ***
+*** Changed     : 08 May 2011                                               ***
 ***-------------------------------------------------------------------------***
 ***                                                                         ***
 ***  d'Arc is a faster way to access Lua values and traverse tables in C.   ***
-***  It supports Lua 5.1.4 and LuaJIT 2 beta 6 and is loathable for not     ***
+***  It supports Lua 5.1.4 and LuaJIT 2 beta 7 and is loathable for not     ***
 ***  using the Lua API. Please use it only if you are 18+ years old.        ***
 ***                                                                         ***
 ***-------------------------------------------------------------------------***
 ***                                                                         ***
-***  This file contains d'Arc table traversal functions for Lua and LuaJIT. ***
+*** This file contains d'Arc table traversal functions for Lua and LuaJIT:  ***
+***                                                                         ***
+***                           darc_traverse()                               ***
 ***                                                                         ***
 ***-------------------------------------------------------------------------***
 ***                                                                         ***
@@ -25,7 +27,7 @@
 ***                                                                         ***
 ***-------------------------------------------------------------------------***
 
-                           (   (    (               
+                           (  (    (               
                            )\ ))\   )\    (         
                           (()/((_)(((_)(  )(    (   
                            ((_) ) )\ _ )\(()\   )\  
@@ -122,7 +124,7 @@ int darc_hash_part (const Table *t, foldfunc fold, void *cargo)
 int darc_array_part (const Table *t, foldfunc fold, void *cargo) 
 {
 	uint32_t i, b;
-	if (t->asize == 0) return;
+	if (t->asize == 0) return 1; // =: continue
 	for (i = b = 0; b < LJ_MAX_ABITS; b++) {
 		uint32_t n, top = 2u << b;
 		TValue *array;
@@ -159,7 +161,7 @@ int darc_hash_part (const Table *t, foldfunc fold, void *cargo)
         Node *n = &node[i];
         if (!tvisnil(&n->val) && !tvisnil(&n->key)) {
 
-            if(!(*fold)(v, cargo)) return 0; // =: break
+            if(!(*fold)((&n->val), cargo)) return 0; // =: break
         }
     }
 	return 1;  // =: continue
@@ -171,8 +173,8 @@ int darc_hash_part (const Table *t, foldfunc fold, void *cargo)
 ***                                                                         ***
 ***                              ORIGINAL LUA                               ***
 ***                                                                         ***
- ***************************************************************************** 
- *      copy of needed original Lua source, which Lua does not export        *
+*******************************************************************************
+**      copy of needed original Lua source, which Lua does not export        **
 \*****************************************************************************/ 
 
 /*---------------------------------------------------------------------------*\
@@ -213,6 +215,15 @@ TValue *index2adr (lua_State *L, int idx) {
 }
 #endif
 
+/*****************************************************************************\
+*   copy of needed original LuaJIT source, which LuaJIT does not export       *
+\*****************************************************************************/ 
+
+/*---------------------------------------------------------------------------*\
+**  Get the C pointer for the value on the stack                             **
+\*---------------------------------------------------------------------------*/
+
+
 #ifdef JIT_2 // | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 /* from jit/src/lj_api.c */
@@ -245,5 +256,5 @@ TValue *index2adr(lua_State *L, int idx)
 }
 #endif // Lua/JIT < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <
 
-
+/* For above original Lua and LuaJIT source, see special notes in LICENSE. */
 
