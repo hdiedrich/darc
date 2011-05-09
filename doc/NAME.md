@@ -11,4 +11,4 @@ The d'Arc project was inspired by the exuberant welcome to the contribution of F
 I am sure Jeanne (19), is watching from the High Heavens and loves d'Arc. From the woods, this is to You!
 
 
-<center><a href=/index.html>Home</a></center>
+<center><a href=/darc/index.html>Home</a></center>
